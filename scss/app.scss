@@ -38,3 +38,24 @@
 //   "foundation/components/type",
 //   "foundation/components/offcanvas",
 //   "foundation/components/visibility";
+
+body {
+  background-image: url(../img/bg.png);
+}
+
+.first-panel {
+  margin-top: 50px;
+}
+.info-date {
+  margin-bottom: 10px;
+}
+.upvote {
+  cursor: pointer;
+}
+.align-bottom {
+  display: inline-block;
+  vertical-align: bottom;
+}
+.muted {
+  color: $base;
+}
