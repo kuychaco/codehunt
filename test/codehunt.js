@@ -5,6 +5,9 @@ var Resource = Backbone.Model.extend({
   defaults: { 
     name: "New Resource",
     votes: 0
+  },
+  upvote: function() {
+    this.get()
   }
 });
 
@@ -18,9 +21,16 @@ var ResourceCollection = Backbone.Firebase.Collection.extend({
 // A view for an individual resource item
 var ResourceView = Backbone.View.extend({
   tagName:  "tr",
-  template: _.template("<td class='upvote'> <%= votes %> </td> <td> <%= name %> </td> <td> <%= url %> </td>"),
+  template: _.template("<td> <button class='upvote'> <%= votes %> </button> </td> <td> <%= name %> </td> <td> <%= url %> </td>"),
   initialize: function() {
     this.listenTo(this.model, "change", this.render);
+  },
+  events: {
+    "click .upvote" : function() {
+      var votes = this.model.get('votes');
+      console.log(votes);
+      this.model.set('votes',votes+1);
+    }
   },
   render: function() {
     this.$el.html(this.template(this.model.toJSON()));
@@ -28,28 +38,14 @@ var ResourceView = Backbone.View.extend({
   },
 });
 
-// // The view for the entire application
-// var AppView = Backbone.View.extend({
-//   el: $('#codehuntapp'),
-//   initialize: function() {
-//     this.list = this.$("#resource-list"); // the list to append to
-
-//     // by listening to when the collection changes we
-//     // can add new items in realtime
-//     this.listenTo(this.collection, 'add', this.addOne);
-//   },
-//   addOne: function(resource) {
-//     var view = new ResourceView({model: Resource});
-//     this.list.append(view.render().el);
-//   }
-// });
-
 // The view for the entire application
 var AppView = Backbone.View.extend({
   el: $('#codehuntapp'),
   events: {
     "click #add-resource" : "createResource",
-    "click .upvote" : "upvote"
+    // "click .upvote" : function() {
+    //   console.log('sdfd');
+    // }
   },
   initialize: function() {
     this.list = this.$("#resource-list"); // the list to append to
@@ -70,13 +66,10 @@ var AppView = Backbone.View.extend({
     // create a new location in firebase and save the model data
     // this will trigger the listenTo method above and a new todo view
     // will be created as well
-    this.collection.create({name: this.input.val(), url: this.url.val()});
+    this.collection.create({name: this.input.val(), url: this.url.val(), date: Date()});
 
     this.input.val('');
     this.url.val('');
-  }, 
-  upvote: function(e) {
-    // TODO
   }
 });
 
